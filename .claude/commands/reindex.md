@@ -1,6 +1,8 @@
 ---
+
 name: reindex
-description: Rebuild von wiki/index.md from scratch durch Scan aller Files in wiki/. Vorher Backup. Deterministisch — gleicher Wiki-Stand erzeugt gleichen Index.
+description: Rebuilds wiki/index.md from scratch by scanning all files in wiki/. Backup performed beforehand. Deterministic — the same wiki state generates the same index.
+
 allowed-tools:
   - Read
   - Write(wiki/index.md)
@@ -13,30 +15,35 @@ allowed-tools:
 # /reindex
 
 ## WRITE-MODEL
-Agent writes the wiki, human curates the raw sources.
-- Schreibt NUR in `wiki/index.md`, `wiki/index.md.bak`, `wiki/log.md`.
-- `raw/**` bleibt unangetastet.
 
-## Ablauf
+An agent writes the wiki, a human curates the raw sources.
 
-### Schritt 1: Backup
+- Writes ONLY to `wiki/index.md`, `wiki/index.md.bak`, and `wiki/log.md`.
+
+- `raw/**` remains untouched.
+
+
+## Procedure
+
+### Step 1: Backup
+
 ```bash
 cp wiki/index.md wiki/index.md.bak
 ```
-Falls `wiki/index.md` nicht existiert: überspringen.
+If `wiki/index.md` does not exist: skip.
 
-### Schritt 2: Wiki-Files scannen
+### Step 2: Scan Wiki Files
 ```bash
 find wiki/ -name "*.md" -not -name "index.md" -not -name "log.md" -not -path "wiki/lint-reports/*"
 ```
 
-Für jede gefundene File:
-- Frontmatter lesen (type, title/name, domain)
-- Kurzbeschreibung extrahieren (erste Nicht-Leer-Zeile nach dem ersten H2)
+For each file found:
+- Read the front matter (type, title/name, domain)
+- Extract the short description (first non-blank line after the first H2)
 
-### Schritt 3: Index aufbauen
+### Step 3: Build the Index
 
-Struktur:
+Structure:
 ```markdown
 ---
 type: index
@@ -71,12 +78,12 @@ _Auto-maintained by Agent. Use `/reindex` to rebuild._
 - [[overviews/domain]] — Scope
 ```
 
-Sortierung innerhalb jeder Sektion: alphabetisch nach Slug/Name.
+Sorting within each section: alphabetically by slug/name.
 
-### Schritt 4: Index schreiben
-`wiki/index.md` komplett überschreiben mit dem neu aufgebauten Index.
+### Step 4: Write Index
+Completely overwrite `wiki/index.md` with the newly built index.
 
-### Schritt 5: Log-Entry
+### Step 5: Log Entry
 ```
 ## [YYYY-MM-DD HH:MM] reindex | Full rebuild
 
@@ -88,7 +95,7 @@ Sortierung innerhalb jeder Sektion: alphabetisch nach Slug/Name.
 - Backup: wiki/index.md.bak
 ```
 
-### Schritt 6: Report an User
-- Counts pro Kategorie
-- Hinweis: Backup liegt unter `wiki/index.md.bak`
-- Falls Abweichungen zum alten Index festgestellt: auflisten (neue Pages, fehlende Einträge)
+### Step 6: Report to User
+- Counts per category
+- Note: Backup located at `wiki/index.md.bak`
+- If discrepancies compared to the old index are detected: list them (new pages, missing entries)

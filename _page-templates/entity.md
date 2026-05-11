@@ -12,23 +12,23 @@ tags: []
 
 ## What
 
-<!-- Was ist diese Entity? 2–4 Sätze. -->
+<!-- What is this entity? 2–4 sentences. -->
 
 ## Context
 
-<!-- Relevanz für diesen Wiki-Scope. Warum ist diese Entity hier? -->
+<!-- Relevance to this wiki's scope. Why is this entity here? -->
 
 ## Related Entities
 
-<!-- [[EntityName]] — Beziehung -->
+<!-- [[EntityName]] — Relationship -->
 -
 
 ## Claims by Source
 
-<!-- Strukturiert nach Source: [[sources/slug]] → Claim -->
+<!-- Structured by Source: [[sources/slug]] → Claim -->
 -
 
 ## Contradictions
 
-<!-- Widersprüche zwischen Sources. [[sources/a]] behauptet X, [[sources/b]] behauptet Y. -->
-<!-- Leer lassen wenn keine Widersprüche. -->
+<!-- Contradictions between sources. [[sources/a]] claims X, [[sources/b]] claims Y. -->
+<!-- Leave blank if no contradictions. -->

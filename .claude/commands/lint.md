@@ -1,65 +1,64 @@
 ---
 name: lint
-description: Periodischer Health-Check des gesamten Wiki. Findet Contradictions, Orphans, Stubs, Missing Concepts, Stale Claims, Broken Links, Index-Drift. Keine automatischen Fixes.
+description: Periodic health check of the entire wiki. Identifies contradictions, orphans, stubs, missing concepts, stale claims, broken links, and index drift. No automatic fixes.
 allowed-tools:
-  - Read
-  - Write(wiki/lint-reports/**)
-  - Write(wiki/log.md)
-  - Glob
-  - Grep
-  - Bash
+    - Read
+    - Write(wiki/lint-reports/**)
+    - Write(wiki/log.md)
+    - Glob
+    - Grep
+    - Bash
 ---
 
 # /lint
 
-## WRITE-MODEL
-Agent writes the wiki, human curates the raw sources.
-- `/lint` schreibt NUR in `wiki/lint-reports/` und `wiki/log.md`.
-- Keine automatischen Fixes in anderen Wiki-Pages.
-- User entscheidet pro Item, was zu tun ist.
+## WRITE MODEL
+Agent writes to the wiki; humans curate the raw source files.
+- `/lint` writes ONLY to `wiki/lint-reports/` and `wiki/log.md`.
+- No automatic fixes are applied to other wiki pages.
+- The user decides, on an item-by-item basis, what action to take.
 
-## Ablauf
+## Process
 
-Scanne `wiki/` vollständig. Erzeuge Report in `wiki/lint-reports/YYYY-MM-DD.md`.
+Scan `wiki/` in its entirety. Generate a report in `wiki/lint-reports/YYYY-MM-DD.md`.
 
 ### Check 1: Contradictions
 ```bash
 grep -r "## Contradictions" wiki/ --include="*.md" -l
 ```
-Für jede gefundene Page: Section-Inhalt lesen und im Report dokumentieren.
+For each page found: Read the content of the relevant section and document it in the report.
 
 ### Check 2: Orphans
-Für jede Page in `wiki/` (außer `index.md` und `log.md`):
+For every page in `wiki/` (excluding `index.md` and `log.md`):
 ```bash
 grep -r "[[PageName]]" wiki/ --include="*.md" | grep -v "^wiki/index.md"
 ```
-Pages ohne inbound Links → Orphan.
+Pages with no inbound links → Orphan.
 
 ### Check 3: Stubs
-Für jede Page: Body-Text-Wörter zählen (ohne Frontmatter, ohne Headings).
-Pages < 50 Wörter → Stub.
+For every page: Count the words in the body text (excluding frontmatter and headings).
+Pages with < 50 words → Stub.
 
 ### Check 4: Missing Concepts
-Extrahiere alle Terme, die in ≥3 Pages vorkommen, aber keine eigene `wiki/concepts/`-Page haben.
+Extract all terms that appear in ≥3 pages but do not have their own dedicated `wiki/concepts/` page.
 ```bash
-# Pseudo-Logik: grep häufiger Terme, abgleichen gegen wiki/concepts/
+# Pseudo-logic: grep for frequent terms, cross-reference against wiki/concepts/
 ```
 
 ### Check 5: Stale Claims
-Pages ohne `evergreen: true` in Frontmatter, deren verlinkte Sources älter als 180 Tage sind.
-Datum aus `ingested_at` Frontmatter der Source-Pages auslesen.
+Pages that lack `evergreen: true` in their frontmatter, and whose linked sources are older than 180 days. Extract date from the `ingested_at` frontmatter of source pages.
 
 ### Check 6: Broken Links
-Alle `[[...]]`-Links in `wiki/` extrahieren. Prüfen ob Ziel-File existiert.
+Extract all `[[...]]` links within `wiki/`. Verify that the target file exists.
 ```bash
 grep -ro "\[\[.*\]\]" wiki/ | sed 's/.*\[\[//;s/\]\].*//'
 ```
 
-### Check 7: Index-Drift
-- Pages in `wiki/` aber nicht in `wiki/index.md` → fehlende Einträge.
-- Einträge in `wiki/index.md` aber kein entsprechendes File → tote Links.
+### Check 7: Index Drift
+- Pages in `wiki/` but not in `wiki/index.md` → missing entries.
+- Entries in `wiki/index.md` but no corresponding file → dead links.
 
-## Report-Format
+## Report Format
 
 ```markdown
 # Lint Report — YYYY-MM-DD
@@ -71,38 +70,38 @@ grep -ro "\[\[.*\]\]" wiki/ | sed 's/.*\[\[//;s/\]\].*//'
 - Missing Concepts: N
 - Stale Claims: N
 - Broken Links: N
-- Index-Drift: N
+- Index Drift: N
 
 ## Contradictions
 - [[page]] ↔ [[page2]] — Claim X
 
 ## Orphans
-- [[entities/X]] — keine inbound links
+- [[entities/X]] — no inbound links
 
 ## Stubs
-- [[concepts/y]] — 23 Wörter
+- [[concepts/y]] — 23 words
 
 ## Missing Concepts
-- "Begriff" — erwähnt in [[p1]], [[p2]], [[p3]]
+- "Term" — mentioned in [[p1]], [[p2]], [[p3]]
 
 ## Stale Claims
-- [[sources/old-source]] — ingested 2025-06-01, kein evergreen
+- [[sources/old-source]] — ingested 2025-06-01, not evergreen
 
 ## Broken Links
-- [[entities/ghost]] — referenziert in [[sources/x]], File existiert nicht
+- [[entities/ghost]] — referenced in [[sources/x]], file does not exist
 
-## Index-Drift
-- In wiki/, nicht im Index: [[concepts/z]]
-- Im Index, kein File: [[entities/deleted]]
+## Index Drift
+- In wiki/, not in index: [[concepts/z]]
+- In index, no file: [[entities/deleted]]
 
 ## Recommended Actions
-- Fix Contradiction in [[page]]: re-ingest [[sources/a]] mit neuem Fokus
-- Delete Orphan [[entities/X]] oder verlinken
-- Expand Stub [[concepts/y]]
-- Create Concept-Page für "Begriff"
+- Fix contradiction in [[page]]: re-ingest [[sources/a]] with a new focus
+- Delete orphan [[entities/X]] or link to it
+- Expand stub [[concepts/y]]
+- Create concept page for "Term"
 ```
 
-## Log-Entry
+## Log Entry
 
 ```
 ## [YYYY-MM-DD HH:MM] lint | <N> issues found

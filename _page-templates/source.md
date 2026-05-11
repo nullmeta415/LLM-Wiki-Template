@@ -15,25 +15,25 @@ key_concepts: []
 
 ## Summary
 
-<!-- 200–500 Wörter. Kompakte Destillation des Kernarguments. -->
+<!-- 200–500 words. A concise distillation of the core argument. -->
 
 ## Key Claims
 
-<!-- Bullets. Jeder Claim endet mit [[sources/this-slug]] als Self-Reference oder bleibt in Open Questions. -->
+<!-- Bullet points. Each claim ends with [[sources/this-slug]] as a self-reference or remains in Open Questions. -->
 -
 
 ## Notable Quotes
 
-<!-- Max. 1 Quote, ≤15 Wörter. -->
+<!-- Max. 1 quote, ≤15 words. -->
 >
 
 ## Open Questions
 
-<!-- Claims, die nicht belegt oder widersprüchlich sind. -->
+<!-- Claims that are unsubstantiated or contradictory. -->
 -
 
 ## Related Pages
 
-<!-- Alle Pages, die bei diesem Ingest erstellt oder geupdated wurden. -->
+<!-- All pages created or updated during this ingest. -->
 - [[entities/...]]
 - [[concepts/...]]

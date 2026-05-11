@@ -1,47 +1,47 @@
 ---
 name: search
-description: Fulltext-Suche im Wiki. Verwendet qmd wenn verfügbar, sonst grep-Fallback. Read-Only — kein Log-Entry.
+description: Full-text search within the wiki. Uses `qmd` if available; otherwise, falls back to `grep`. Read-only — no log entry.
 allowed-tools:
-  - Read
-  - Glob
-  - Grep
-  - Bash
+    - Read
+    - Glob
+    - Grep
+    - Bash
 ---
 
 # /search <query>
 
 ## WRITE-MODEL
-Read-Only-Operation. Kein Log-Entry. Kein Write in `wiki/**`.
+Read-only operation. No log entry. No writes to `wiki/**`.
 
-## Ablauf
+## Workflow
 
-### Schritt 1: qmd-Check
+### Step 1: `qmd` Check
 ```bash
 which qmd 2>/dev/null && echo "qmd available" || echo "grep fallback"
 ```
 
-### Schritt 2a: qmd verfügbar
+### Step 2a: `qmd` Available
 ```bash
 qmd search "<query>" wiki/
 ```
-Results formatiert zurückgeben: Pfad, Snippet, Score.
+Return results in a formatted manner: path, snippet, score.
 
-### Schritt 2b: grep-Fallback
+### Step 2b: `grep` Fallback
 ```bash
 grep -r -i -n "<query>" wiki/ --include="*.md" | head -30
 ```
-Plus Index-Titel-Match:
+Plus Index Title Match:
 ```bash
 grep -i "<query>" wiki/index.md
 ```
 
-### Schritt 3: Ergebnisse ausgeben
-- Relevante Pages mit kurzem Kontext-Snippet.
-- Direkter Hinweis auf die nützlichsten Pages.
-- Angebot: "Soll ich `/query` mit einer konkreten Frage basierend auf diesen Pages starten?"
+### Step 3: Output Results
+- Relevant pages accompanied by a brief contextual snippet.
+- Direct pointers to the most useful pages.
+- Suggestion: "Shall I initiate `/query` with a specific question based on these pages?"
 
 ## Constraints
 
-- Kein Schreiben.
-- Kein Log-Entry.
-- Bei leeren Ergebnissen: explizit sagen, welche Suchbegriffe zu keinen Matches führten.
+- No writing.
+- No log entry.
+- In the event of empty results: explicitly state which search terms yielded no matches.

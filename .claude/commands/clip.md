@@ -1,6 +1,6 @@
 ---
 name: clip
-description: Fetcht Inhalt einer URL, konvertiert zu Markdown, speichert in raw/articles/<slug>.md. Kann direkt anschließend /ingest triggern. Einstiegspunkt für Web-Content.
+description: Fetches content from a URL, converts it to Markdown, and saves it to raw/articles/<slug>.md. Can directly trigger /ingest immediately afterward. Entry point for web content.
 allowed-tools:
   - Read
   - Write(raw/articles/**)
@@ -12,26 +12,26 @@ allowed-tools:
 # /clip <url>
 
 ## WRITE-MODEL
-Agent writes the wiki, human curates the raw sources.
-- `/clip` schreibt EINMALIG in `raw/articles/` — das ist der einzige Fall, wo der Agent in `raw/` schreibt.
-- Nach dem Clip ist `raw/articles/<slug>.md` READ-ONLY für den Agent (wie alle anderen `raw/`-Files).
-- Kein nachträgliches Editieren der geclippen File.
+The agent writes to the wiki; the human curates the raw sources.
+- `/clip` writes to `raw/articles/` exactly ONCE — this is the only instance where the agent writes to `raw/`.
+- After the clip operation, `raw/articles/<slug>.md` becomes READ-ONLY for the agent (just like all other files in `raw/`).
+- No subsequent editing of the clipped file is permitted.
 
-## Ablauf
+## Process
 
-### Schritt 1: URL fetchen
-WebFetch-Tool auf `<url>` aufrufen. Full-Content-Modus.
+### Step 1: Fetch URL
+Invoke the WebFetch tool on `<url>`. Use full-content mode.
 
-### Schritt 2: Slug erzeugen
-Aus dem `<title>`-Tag oder H1 der Page: kebab-case, max. 60 Zeichen.
-Beispiel: `andrej-karpathy-llm-wiki-gist`
+### Step 2: Generate Slug
+Derive from the page's `<title>` tag or H1 heading: use kebab-case, max. 60 characters.
+Example: `andrej-karpathy-llm-wiki-gist`
 
-### Schritt 3: Markdown konvertieren
-- HTML → Markdown (Headings, Links, Code-Blocks erhalten).
-- Navigation, Footer, Ads, Cookie-Banner entfernen.
-- Images: Alt-Text erhalten, `![alt](raw/assets/<filename>)` als Platzhalter.
+### Step 3: Convert to Markdown
+- HTML → Markdown (preserve headings, links, and code blocks).
+- Remove navigation menus, footers, ads, and cookie banners.
+- Images: Preserve alt text; use `![alt](raw/assets/<filename>)` as a placeholder.
 
-### Schritt 4: Source-Frontmatter schreiben
+### Step 4: Write Source Frontmatter
 ```yaml
 ---
 type: raw-source
@@ -41,28 +41,29 @@ fetched_at: "YYYY-MM-DD HH:MM"
 ---
 ```
 
-### Schritt 5: File speichern
-`raw/articles/<slug>.md` schreiben.
+### Step 5: Save File
+Write the file to `raw/articles/<slug>.md`.
 
-### Schritt 6: Log-Entry
+### Step 6: Log Entry
 ```
-## [YYYY-MM-DD HH:MM] clip | <title>
+## [YYYY-MM-DD HH:MM] clip |
+``` <title>
 
 - Saved: raw/articles/<slug>.md
 - Source URL: <url>
-- Size: ~N Wörter
+- Size: ~N words
 ```
 
-### Schritt 7: Ingest-Angebot
+### Step 7: Ingest Offer
 ```
-Geclipt: raw/articles/<slug>.md (~N Wörter)
-Direkt ingestionieren? → /ingest raw/articles/<slug>.md
+Clipped: raw/articles/<slug>.md (~N words)
+Ingest directly? → /ingest raw/articles/<slug>.md
 ```
 
-User entscheidet. Kein automatischer Ingest.
+User decides. No automatic ingest.
 
-## Fehlerbehandlung
+## Error Handling
 
-- URL nicht erreichbar: Fehlermeldung ausgeben, kein File schreiben.
-- Paywall / Login-Wall: Hinweis, dass manuelles Ablegen in `raw/` nötig ist.
-- Sehr langer Content (>10.000 Wörter): Warnung ausgeben, trotzdem komplett clippen.
+- URL unreachable: Output error message; do not write file.
+- Paywall / Login wall: Notify user that manual placement in `raw/` is required.
+- Very long content (>10,000 words): Output warning, but clip the full content regardless.

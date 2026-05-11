@@ -1,56 +1,56 @@
 ---
 name: query
-description: Frage gegen das Wiki stellen. Liest relevante Pages, synthetisiert Antwort mit Wikilink-Citations. Schreibt NIEMALS automatisch — Filing ist separate User-Entscheidung.
+description: Ask a question against the wiki. Reads relevant pages, synthesizes an answer with wiki-link citations. NEVER writes automatically — filing is a separate user decision.
 allowed-tools:
-  - Read
-  - Write(wiki/**)
-  - Glob
-  - Grep
+    - Read
+    - Write(wiki/**)
+    - Glob
+    - Grep
 ---
 
 # /query <question>
 
-## WRITE-MODEL
-Agent writes the wiki, human curates the raw sources.
-- `/query` ist primär eine **Read-Only-Operation**.
-- NIEMALS automatisch in `wiki/**` schreiben. Nur auf expliziten User-Befehl via `/file`.
-- Falls Log-Entry gewünscht: Nur nach User-Bestätigung.
+## WRITE MODEL
+The agent writes the wiki; the human curates the raw sources.
+- `/query` is primarily a **read-only operation**.
+- NEVER write automatically to `wiki/**`. Only upon explicit user command via `/file`.
+- If a log entry is desired: Only after user confirmation.
 
-## Ablauf
+## Process
 
-### Schritt 1: Index lesen
-`wiki/index.md` vollständig lesen. Überblick über verfügbare Pages gewinnen.
+### Step 1: Read Index
+Read `wiki/index.md` in its entirety. Gain an overview of available pages.
 
-### Schritt 2: Relevante Pages identifizieren
-- Index-Sektionen auf Relevanz prüfen.
-- Titel-Grep: `grep -r -i "<keyword>" wiki/` für Schlüsselbegriffe der Frage.
-- Maximal 8–10 Pages für eine Query laden (bei mehr: priorisieren nach Relevanz-Score).
+### Step 2: Identify Relevant Pages
+- Check index sections for relevance.
+- Title Grep: `grep -r -i "<keyword>" wiki/` for keywords found in the question.
+- Load a maximum of 8–10 pages per query (if more exist: prioritize based on relevance score).
 
-### Schritt 3: Pages vollständig lesen
-Alle identifizierten Pages komplett lesen. Frontmatter und Body.
+### Step 3: Read Pages Fully
+Read all identified pages completely—both frontmatter and body.
 
-### Schritt 4: Antwort synthetisieren
-- Antwort in natürlicher Sprache, strukturiert.
-- **Jeder Fact mit Citation:** `[[page-name]]` direkt nach der Aussage.
-- Nur auf existierende `wiki/`-Pages verlinken. Keine externen Referenzen in der Antwort.
-- Wenn eine Frage nicht beantwortbar ist: Explizit sagen welche Pages fehlen.
+### Step 4: Synthesize Answer
+- Provide an answer in natural language, structured clearly.
+- **Cite every fact:** Place `[[page-name]]` directly after the statement.
+- Link only to existing `wiki/` pages. Do not include external references in the answer.
+- If a question cannot be answered: Explicitly state which pages are missing.
 
-### Schritt 5: Filing-Angebot
-Am Ende der Antwort immer:
-> "Diese Antwort als neue Wiki-Page speichern? → `/file <vorgeschlagener-slug>`"
+### Step 5: Offer to File
+Always include the following at the end of the answer:
+> "Save this answer as a new wiki page? → `/file <suggested-slug>`"
 
-### Schritt 6: Log-Entry (optional)
-Log-Entry nur appenden wenn User explizit bestätigt oder wenn `/file` ausgeführt wird.
+### Step 6: Log Entry (Optional)
+Append a log entry only if the user explicitly confirms it, or if `/file` is executed.
 Format:
 ```
 ## [YYYY-MM-DD HH:MM] query | <short-question>
 
 - Pages consulted: [[page1]], [[page2]]
-- Filed as: [[overviews/slug]] oder "none"
+- Filed as: [[overviews/slug]] or "none"
 ```
 
 ## Constraints
 
-- Keine externen Referenzen oder URLs in der Query-Antwort.
-- Keine Halluzinationen: Wenn das Wiki eine Frage nicht beantworten kann, direkt sagen.
-- Kein automatisches Schreiben in `wiki/**` ohne User-Entscheidung.
+- No external references or URLs in the query response.
+- No hallucinations: If the wiki cannot answer a question, state so directly.
+- No automatic writing to `wiki/**` without user decision.

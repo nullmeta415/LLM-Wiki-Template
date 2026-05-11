@@ -1,13 +1,13 @@
 ---
 name: llm-wiki
 description: >
-  Bootstraps and maintains a Karpathy-Style LLM Wiki Workspace — ein persistentes, markdown-basiertes
-  Wissensartefakt, das ein LLM-Agent inkrementell aus unveränderlichen Rohquellen aufbaut.
-  IMMER verwenden wenn Ivan einen LLM-Wiki aufbauen möchte, Sources einarbeiten will (ingest),
-  das Wiki abfragen will (query), oder Health-Checks durchführen will (lint). Auch triggern bei
+  Bootstraps and maintains a Karpathy-style LLM Wiki workspace — a persistent, Markdown-based
+  knowledge artifact that an LLM agent incrementally builds from immutable raw sources. 
+  ALWAYS use whenever Ivan wants to build an LLM Wiki, ingest sources,
+  query the wiki, or perform health checks (lint). Also trigger on
   "Karpathy Wiki", "LLM Wiki", "compile-once", "wiki workspace", "obsidian rag", "/ingest", "/query",
-  "/lint", "/clip", "/file", "/search", "/reindex", "/bootstrap".
-  Enthält 8 Slash-Commands, ein vollständiges Workspace-Bootstrap, und das Schema-Dokument (CLAUDE.md).
+  "/lint", "/clip", "/file", "/search", "/reindex", "/bootstrap". 
+  Includes 8 slash commands, a complete workspace bootstrap, and the schema document (CLAUDE.md).
 allowed-tools:
   - Read
   - Write(wiki/**)
@@ -18,50 +18,50 @@ allowed-tools:
 
 # LLM Wiki Skill
 
-Implementiert das **Karpathy LLM Wiki Pattern**: Ein persistentes, compoundierendes Wissens-Artefakt.
-Der Agent schreibt das Wiki. Der User kuratiert die Rohquellen.
+Implements the **Karpathy LLM Wiki Pattern**: A persistent, compounding knowledge artifact.
+The agent writes the wiki. The user curates the raw sources.
 
 ## WRITE-MODEL
 
 ```
 Agent writes the wiki, human curates the raw sources.
-- raw/**  →  READ-ONLY für den Agent. NIEMALS schreiben, editieren, löschen.
-- wiki/** →  Working Area des Agent. Agent pflegt es aktiv.
-- Jeder Write in wiki/** MUSS einen Log-Entry in wiki/log.md erzeugen.
-- Manuelle User-Edits in Wiki-Pages → im nächsten Log-Entry vermerken.
+- raw/**  →  READ-ONLY for the agent. NEVER write, edit, or delete.
+- wiki/** →  Agent's working area. The agent actively maintains it.
+- Every write to wiki/** MUST generate a log entry in wiki/log.md.
+- Manual user edits to wiki pages → note in the next log entry.
 ```
 
-## Drei Schichten
+## Three Layers
 
-| Schicht | Pfad | Owner |
+| Layer | Path | Owner |
 |---|---|---|
-| Immutable Sources | `raw/**` | User (nur additive) |
-| Agent Wiki | `wiki/**` | Agent (primär) |
-| Schema | `CLAUDE.md` | Co-Evolution |
+| Immutable Sources | `raw/**` | User (additive only) |
+| Agent Wiki | `wiki/**` | Agent (primary) |
+| Schema | `CLAUDE.md` | Co-evolution |
 
-## Drei Operations
+## Three Operations
 
-| Operation | Command | Wann |
+| Operation | Command | When |
 |---|---|---|
-| Source einarbeiten | `/ingest <path>` | Neues Material |
-| Frage stellen | `/query <question>` | Ad-hoc |
-| Health-Check | `/lint` | Wöchentlich |
+| Ingest Source | `/ingest <path>` | New Material |
+| Ask a Question | `/query <question>` | Ad-hoc |
+| Health Check | `/lint` | Weekly |
 
 ## Commands
 
-Alle Commands liegen unter `.claude/commands/`. Referenz-Dokumentation:
+All commands are located under `.claude/commands/`. Reference documentation:
 
-- `references/index-format.md` → Struktur von `wiki/index.md`
-- `references/log-format.md` → Struktur von `wiki/log.md`
-- `references/page-conventions.md` → Frontmatter-Regeln, Link-Style
-- `references/karpathy-gist.md` → Verbatim-Referenz des Original-Gist
+- `references/index-format.md` → Structure of `wiki/index.md`
+- `references/log-format.md` → Structure of `wiki/log.md`
+- `references/page-conventions.md` → Frontmatter rules, link style
+- `references/karpathy-gist.md` → Verbatim reference to the original gist
 
 ## Bootstrapping
 
-Beim ersten Start: `/bootstrap` ausführen. Legt die vollständige Ordnerstruktur an.
-Idempotent — zweiter Run überschreibt keine existierenden Files.
+Upon first launch: Run `/bootstrap`. This creates the complete folder structure.
+Idempotent — a second run will not overwrite existing files.
 
-## Scale-Limit
+## Scale Limit
 
-Optimiert für ≤ 100–200 Sources / ≤ 500 Wiki-Pages.
-Darüber hinaus: `qmd` installieren oder zu GraphRAG migrieren. Siehe `TRADE-OFFS.md`.
+Optimized for ≤ 100–200 sources / ≤ 500 wiki pages.
+Beyond this scale: Install `qmd` or migrate to GraphRAG. See `TRADE-OFFS.md`.

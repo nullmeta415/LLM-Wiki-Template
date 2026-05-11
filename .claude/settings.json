@@ -10,8 +10,7 @@
       "Write(wiki/index.md.bak)",
       "Glob(**)",
       "Grep(**)",
-      "Bash(find:grep:wc:cp:mkdir:which)",
-      "WebFetch(**)"
+      "Bash(find:grep:wc:cp:mkdir:which)"
     ],
     "deny": [
       "Write(raw/papers/**)",
@@ -24,8 +23,5 @@
       "Write(WORKFLOW.md)",
       "Write(TRADE-OFFS.md)"
     ]
-  },
-  "hooks": {
-    "post_write_wiki": "Ensure log entry appended to wiki/log.md"
   }
 }

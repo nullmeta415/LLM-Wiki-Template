@@ -1,47 +1,48 @@
 ---
 name: file
-description: Speichert die vorangegangene Agent-Antwort (typischerweise eine /query-Antwort) als neue Wiki-Page. Updated Index und Log. Nur auf expliziten User-Befehl.
+description: Saves the preceding agent response (typically a /query response) as a new wiki page. Updates the index and log. Executed only upon explicit user command.
 allowed-tools:
-  - Read
-  - Write(wiki/**)
-  - Glob
+    - Read
+    - Write(wiki/**)
+    - Glob
 ---
 
 # /file <slug>
 
 ## WRITE-MODEL
-Agent writes the wiki, human curates the raw sources.
-- Dieser Command wird NUR auf expliziten User-Befehl ausgeführt.
-- NIEMALS automatisch nach `/query` filen — User muss `/file` explizit aufrufen.
-- `raw/**` bleibt unangetastet.
+The agent writes the wiki; the human curates the raw sources.
+- This command is executed ONLY upon explicit user command.
+- NEVER file automatically after a `/query` — the user must explicitly invoke `/file`.
+- `raw/**` remains untouched.
 
-## Ablauf
+## Workflow
 
-### Schritt 1: Content bestimmen
-- Standard: Die unmittelbar vorangegangene Agent-Antwort (typischerweise eine `/query`-Antwort).
-- Falls User explizit Content spezifiziert: diesen verwenden.
+### Step 1: Determine Content
+- Default: The immediately preceding agent response (typically a `/query` response).
+- If the user explicitly specifies content: use that content.
 
-### Schritt 2: Page-Typ bestimmen
-Anhand des Inhalts:
-- Synthese über einen Domain → `wiki/overviews/<slug>.md`
-- Vergleich zweier Dinge → `wiki/comparisons/<slug>.md`
-- Antwort über ein Concept → `wiki/concepts/<slug>.md`
-- Antwort über eine Entity → `wiki/entities/<slug>.md`
+### Step 2: Determine Page Type
+Based on the content:
+- Synthesis regarding a Domain → `wiki/overviews/<slug>.md`
+- Comparison of two things → `wiki/comparisons/<slug>.md`
+- Response regarding a Concept → `wiki/concepts/<slug>.md`
+- Response regarding an Entity → `wiki/entities/<slug>.md`
 
-Bei Unsicherheit: User fragen oder Default `wiki/overviews/<slug>.md` verwenden.
+If unsure: Ask the user or use the default `wiki/overviews/<slug>.md`.
 
-### Schritt 3: Page schreiben
-- Passendes Template aus `_page-templates/` laden.
-- Content in Template-Struktur einpassen.
-- Frontmatter vollständig ausfüllen (type, created, sources aus den `/query`-Citations).
-- Alle `[[citations]]` aus der Query-Antwort beibehalten.
+### Step 3: Write Page
+- Load the appropriate template from `_page-templates/`.
+- Fit the content into the template structure.
+- Fully populate the frontmatter (type, created, sources derived from the `/query` citations).
+- Retain all `[[citations]]` from the query response.
 
-### Schritt 4: Index updaten
-Neue Page in die passende Sektion von `wiki/index.md` eintragen.
+### Step 4: Update Index
+Add the new page to the appropriate section of `wiki/index.md`.
 
-### Schritt 5: Log-Entry
+### Step 5: Log Entry
 ```
-## [YYYY-MM-DD HH:MM] file | <slug>
+## [YYYY-MM-DD HH:MM] file |
+``` <slug>
 
 - Filed as: [[<type>/<slug>]]
 - Type: <page-type>
@@ -49,6 +50,6 @@ Neue Page in die passende Sektion von `wiki/index.md` eintragen.
 - Citations preserved: [[p1]], [[p2]]
 ```
 
-### Schritt 6: Bestätigung an User
-- Pfad der neuen Page
-- Hinweis: Page kann jetzt als Source für zukünftige Queries dienen
+- Step 6: Confirmation to User
+- Path to the new page
+- Note: The page can now serve as a source for future queries.

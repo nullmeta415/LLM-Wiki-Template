@@ -11,21 +11,21 @@ sources: []
 
 ## Summary
 
-<!-- 3–5 Sätze: Kernunterschied und Fazit. -->
+<!-- 3–5 sentences: Key difference and conclusion. -->
 
 ## Criteria Table
 
-| Kriterium | {{A}} | {{B}} |
+| Criterion | {{A}} | {{B}} |
 |---|---|---|
 | | | |
 | | | |
 
 ## When to Choose Which
 
-**{{A}} wenn:**
+**{{A}} if:**
 -
 
-**{{B}} wenn:**
+**{{B}} if:**
 -
 
 ## Sources

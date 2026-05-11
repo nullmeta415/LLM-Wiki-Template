@@ -1,68 +1,67 @@
 ---
 name: ingest
-description: Einarbeiten einer neuen Source in das Wiki. Erzeugt Source-Page, updated Entity- und Concept-Pages, updated Index und Log. Der zentrale Command des LLM Wiki Patterns.
+description: Incorporating a new source into the wiki. Generates a Source Page, updates Entity and Concept Pages, and updates the Index and Log. The central command of the LLM Wiki Pattern.
 allowed-tools:
-  - Read
-  - Write(wiki/**)
-  - Glob
-  - Grep
-  - Bash
+    - Read
+    - Write(wiki/**)
+    - Glob
+    - Grep
+    - Bash
 ---
 
 # /ingest <path-or-url>
 
 ## WRITE-MODEL
-Agent writes the wiki, human curates the raw sources.
-- `raw/**` ist READ-ONLY. NIEMALS schreiben, editieren, löschen.
-- `wiki/**` ist der Working-Area. Alle Outputs gehen hierhin.
-- Jeder Write MUSS einen Log-Entry in `wiki/log.md` erzeugen.
+The agent writes the wiki; the human curates the raw sources.
+- `raw/**` is READ-ONLY. NEVER write to, edit, or delete files here.
+- `wiki/**` is the working area. All outputs go here.
+- Every write operation MUST generate a log entry in `wiki/log.md`.
 
-## Ablauf
+## Process
 
-### Schritt 1: Source lesen
-- Lokaler Pfad: Datei in `raw/` lesen.
-- URL: Hinweis ausgeben, dass `/clip <url>` zuerst verwendet werden soll. Dann lokalen Pfad abwarten.
-- Falls Pfad nicht in `raw/` liegt: Warnung ausgeben. Source trotzdem lesen, aber dokumentieren.
+### Step 1: Read Source
+- Local Path: Read the file located in `raw/`.
+- URL: Issue a prompt indicating that `/clip <url>` should be used first. Then, wait for the local path to be provided.
+- If the path is not located within `raw/`: Issue a warning. Read the source anyway, but document this exception.
 
-### Schritt 2: Rückfragen an User (2–3)
-Stelle diese Fragen **bevor** du schreibst:
-1. "Was ist der Fokus, den ich beim Ingest priorisieren soll?"
-2. "Gibt es bestimmte Entities oder Concepts, die besonders wichtig sind?"
-3. Falls unklar: "In welcher Sprache sollen die Wiki-Pages verfasst werden? (Sprache der Source oder andere?)"
+### Step 2: Ask User for Clarification (2–3 questions)
+Ask these questions **before** you start writing:
+1. "What specific focus should I prioritize during the ingestion process?"
+2. "Are there any specific Entities or Concepts that are particularly important?"
+3. If unclear: "In which language should the wiki pages be written? (The source's language, or another?)"
 
-Warte auf Antwort des Users, bevor du weitergehst.
+Wait for the user's response before proceeding.
 
-### Schritt 3: Source-Page schreiben
-Pfad: `wiki/sources/<slug>.md` (Slug: kebab-case vom Titel)
+### Step 3: Write Source Page
+Path: `wiki/sources/<slug>.md` (Slug: kebab-case version of the title)
 Template: `_page-templates/source.md`
 
-Inhalt:
-- **Summary:** 200–500 Wörter. Kompakte Destillation.
-- **Key Claims:** Bullets. Jeder Claim verlinkt auf `[[sources/this-slug]]`.
-- **Notable Quotes:** Max. 1 Quote, ≤15 Wörter.
-- **Open Questions:** Unbelegte Aspekte.
-- **Related Pages:** Links zu allen erzeugten/getouchten Pages.
+Content:
+- **Summary:** 200–500 words. A concise distillation of the content.
+- **Key Claims:** Bullet points. Each claim links back to `[[sources/this-slug]]`.
+- **Notable Quotes:** Max. 1 quote, ≤15 words. - **Open Questions:** Unsubstantiated aspects.
+- **Related Pages:** Links to all generated/touched pages.
 
-### Schritt 4: Entity-Pages updaten/erzeugen
-Für jede erwähnte Person / Firma / Produkt / Tool:
-- Existierende Page: Relevante Section updaten, neue Source in `sources:`-Frontmatter hinzufügen.
-- Neue Entity: Page aus `_page-templates/entity.md` anlegen.
-- Bei Namenskollision: Suffix-Konvention (`Apex-Software`, `Apex-Hardware`).
+### Step 4: Update/Create Entity Pages
+For every mentioned person / company / product / tool:
+- Existing Page: Update the relevant section; add the new source to the `sources:` frontmatter.
+- New Entity: Create a page using the `_page-templates/entity.md` template.
+- In case of a naming conflict: Apply the suffix convention (e.g., `Apex-Software`, `Apex-Hardware`).
 
-### Schritt 5: Concept-Pages updaten/erzeugen
-Analog zu Schritt 4 für Topics / Ideen / Methoden / Theoreme.
+### Step 5: Update/Create Concept Pages
+Proceed analogously to Step 4 for topics / ideas / methods / theorems.
 
-### Schritt 6: Contradiction-Check
-Prüfe neue Claims gegen bestehende Wiki-Pages:
-- Falls Widerspruch gefunden: `## Contradictions` Section in der betroffenen Page ergänzen.
-- Format: `[[sources/neue-source]] behauptet X, [[sources/alte-source]] behauptet Y.`
-- In der Source-Page unter `## Open Questions` vermerken.
+### Step 6: Contradiction Check
+Verify new claims against existing wiki pages:
+- If a contradiction is found: Add a `## Contradictions` section to the affected page.
+- Format: `[[sources/new-source]] claims X; [[sources/old-source]] claims Y.`
+- Note this under `## Open Questions` on the source page.
 
-### Schritt 7: Index updaten
-`wiki/index.md`: Neue Pages in die passende Sektion einreihen.
+### Step 7: Update Index
+`wiki/index.md`: Insert the new pages into the appropriate section.
 Format: `- [[sources/slug]] — Short description`
 
-### Schritt 8: Log-Entry appenden
+### Step 8: Append Log Entry
 ```
 ## [YYYY-MM-DD HH:MM] ingest | <source-title>
 
@@ -72,9 +71,9 @@ Format: `- [[sources/slug]] — Short description`
 - Notes: <focus/language/special notes>
 ```
 
-### Schritt 9: Diff-Report an User
-Ausgabe:
-- Neu erstellte Pages (mit Pfaden)
-- Geupdatete Pages
-- Gefundene Widersprüche
-- Empfehlung: `git commit -m "ingest: <title>"`
+### Step 9: Diff Report to User
+Output:
+- Newly created pages (with paths)
+- Updated pages
+- Contradictions found
+- Recommendation: `git commit -m "ingest: <title>"`

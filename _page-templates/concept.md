@@ -11,28 +11,28 @@ evergreen: false
 
 ## Definition
 
-<!-- Präzise, 2–5 Sätze. Kein Filler. -->
+<!-- Precise, 2–5 sentences. No filler. -->
 
 ## Why It Matters
 
-<!-- Praktische oder theoretische Relevanz. Warum ist dieses Concept hier? -->
+<!-- Practical or theoretical relevance. Why is this concept here? -->
 
 ## Variants / Approaches
 
-<!-- Unterformen, verwandte Methoden, alternative Formulierungen. -->
+<!-- Subtypes, related methods, alternative formulations. -->
 -
 
 ## Evidence
 
-<!-- Was belegt dieses Concept? Quellen mit [[sources/slug]]. -->
+<!-- What supports this concept? Sources via [[sources/slug]]. -->
 -
 
 ## Open Questions
 
-<!-- Unbelegte Aspekte, aktive Debatten, fehlende Sources. -->
+<!-- Unsubstantiated aspects, active debates, missing sources. -->
 -
 
 ## Contradictions
 
-<!-- Widersprüche zwischen Sources über dieses Concept. -->
-<!-- Leer lassen wenn keine. -->
+<!-- Contradictions between sources regarding this concept. -->
+<!-- Leave blank if none exist. -->
